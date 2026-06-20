@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<style>
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  html,body{margin:0;padding:0;background:#070f0a;}
+  body{font-family:"Source Sans 3",-apple-system,sans-serif;-webkit-font-smoothing:antialiased;}
+  ::selection{background:#57d99a;color:#06120b;}
+  ::-webkit-scrollbar{width:10px;}
+  ::-webkit-scrollbar-track{background:#0a160f;}
+  ::-webkit-scrollbar-thumb{background:#1f4a36;border-radius:8px;}
+  ::-webkit-scrollbar-thumb:hover{background:#2c5f47;}
+  [data-reveal]{opacity:0;transform:translateY(38px);transition:opacity 1s cubic-bezier(.16,.84,.34,1),transform 1s cubic-bezier(.16,.84,.34,1);will-change:opacity,transform;}
+  [data-reveal="scale"]{transform:scale(.94);}
+  [data-reveal="left"]{transform:translateX(-46px);}
+  [data-reveal="right"]{transform:translateX(46px);}
+  @keyframes ykFlow{to{stroke-dashoffset:-1000;}}
+  @keyframes ykFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-22px);}}
+  @keyframes ykPulse{0%,100%{opacity:.35;}50%{opacity:.9;}}
+  @keyframes ykScroll{0%{transform:translateY(0);opacity:0;}30%{opacity:1;}100%{transform:translateY(22px);opacity:0;}}
+  @keyframes ykSpin{to{transform:rotate(360deg);}}
+  @keyframes ykDrift{0%{transform:translate(0,0);}100%{transform:translate(-60px,-60px);}}
+  @keyframes ykGlow{0%,100%{opacity:.5;}50%{opacity:1;}}
+  @media (max-width:860px){
+    [data-nav-links]{display:none!important;}
+    [data-burger]{display:flex!important;}
+  }
+</style>
+</helmet>
+
+<div ref="{{ rootRef }}" style="position:relative;background:#070f0a;color:#dfeee6;overflow-x:hidden;font-family:'Source Sans 3',sans-serif;">
+
+  <!-- scroll progress -->
+  <div style="position:fixed;top:0;left:0;height:2px;width:100%;background:transparent;z-index:120;">
+    <div ref="{{ progressRef }}" style="height:100%;width:0%;background:linear-gradient(90deg,#1f4a36,#57d99a);box-shadow:0 0 14px rgba(87,217,154,.6);"></div>
+  </div>
+
+  <!-- NAV -->
+  <nav ref="{{ navRef }}" style="position:fixed;top:0;left:0;right:0;z-index:110;display:flex;align-items:center;justify-content:space-between;padding:22px clamp(20px,5vw,64px);transition:background .5s ease,padding .5s ease,backdrop-filter .5s ease;">
+    <a href="#top" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:#dfeee6;">
+      <span style="display:grid;place-items:center;width:42px;height:42px;border:1.5px solid #2c5f47;border-radius:12px;font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:#57d99a;letter-spacing:.02em;">YK</span>
+      <span style="font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:#9fb8ab;font-weight:600;">Youssouf&nbsp;Kanté</span>
+    </a>
+    <div data-nav-links style="display:flex;align-items:center;gap:34px;">
+      <a href="#apropos" style="text-decoration:none;color:#cfe2d8;font-size:13.5px;letter-spacing:.06em;font-weight:500;transition:color .3s;" onMouseOver="{{ navHover }}" onMouseOut="{{ navOut }}">À propos</a>
+      <a href="#parcours" style="text-decoration:none;color:#cfe2d8;font-size:13.5px;letter-spacing:.06em;font-weight:500;transition:color .3s;" onMouseOver="{{ navHover }}" onMouseOut="{{ navOut }}">Parcours</a>
+      <a href="#experiences" style="text-decoration:none;color:#cfe2d8;font-size:13.5px;letter-spacing:.06em;font-weight:500;transition:color .3s;" onMouseOver="{{ navHover }}" onMouseOut="{{ navOut }}">Expériences</a>
+      <a href="#competences" style="text-decoration:none;color:#cfe2d8;font-size:13.5px;letter-spacing:.06em;font-weight:500;transition:color .3s;" onMouseOver="{{ navHover }}" onMouseOut="{{ navOut }}">Compétences</a>
+      <a href="#projets" style="text-decoration:none;color:#cfe2d8;font-size:13.5px;letter-spacing:.06em;font-weight:500;transition:color .3s;" onMouseOver="{{ navHover }}" onMouseOut="{{ navOut }}">Projets</a>
+      <a href="#contact" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:#06120b;background:#57d99a;padding:9px 18px;border-radius:40px;font-size:13px;font-weight:700;letter-spacing:.04em;transition:transform .3s,box-shadow .3s;" onMouseOver="{{ ctaHover }}" onMouseOut="{{ ctaOut }}">Contact</a>
+    </div>
+    <button data-burger onClick="{{ toggleMenu }}" style="display:none;flex-direction:column;gap:5px;background:transparent;border:none;cursor:pointer;padding:8px;">
+      <span style="width:24px;height:2px;background:#dfeee6;display:block;"></span>
+      <span style="width:24px;height:2px;background:#dfeee6;display:block;"></span>
+      <span style="width:24px;height:2px;background:#dfeee6;display:block;"></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div ref="{{ menuRef }}" style="position:fixed;inset:0;z-index:115;background:rgba(7,15,10,.97);backdrop-filter:blur(8px);display:none;flex-direction:column;align-items:center;justify-content:center;gap:26px;">
+    <button onClick="{{ toggleMenu }}" style="position:absolute;top:26px;right:26px;background:transparent;border:none;color:#dfeee6;font-size:30px;cursor:pointer;line-height:1;">×</button>
+    <a href="#apropos" onClick="{{ toggleMenu }}" style="text-decoration:none;color:#dfeee6;font-family:'Playfair Display',serif;font-size:26px;">À propos</a>
+    <a href="#parcours" onClick="{{ toggleMenu }}" style="text-decoration:none;color:#dfeee6;font-family:'Playfair Display',serif;font-size:26px;">Parcours</a>
+    <a href="#experiences" onClick="{{ toggleMenu }}" style="text-decoration:none;color:#dfeee6;font-family:'Playfair Display',serif;font-size:26px;">Expériences</a>
+    <a href="#competences" onClick="{{ toggleMenu }}" style="text-decoration:none;color:#dfeee6;font-family:'Playfair Display',serif;font-size:26px;">Compétences</a>
+    <a href="#projets" onClick="{{ toggleMenu }}" style="text-decoration:none;color:#dfeee6;font-family:'Playfair Display',serif;font-size:26px;">Projets</a>
+    <a href="#contact" onClick="{{ toggleMenu }}" style="text-decoration:none;color:#57d99a;font-family:'Playfair Display',serif;font-size:26px;">Contact</a>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <header id="top" data-screen-label="Hero" style="position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:radial-gradient(120% 90% at 78% 18%,#11271b 0%,#0a160f 42%,#070f0a 100%);">
+    <!-- grid -->
+    <div ref="{{ heroGridRef }}" style="position:absolute;inset:-40px;background-image:linear-gradient(rgba(87,217,154,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(87,217,154,.05) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(80% 70% at 70% 30%,#000 30%,transparent 80%);-webkit-mask-image:radial-gradient(80% 70% at 70% 30%,#000 30%,transparent 80%);"></div>
+    <!-- flux svg -->
+    <svg ref="{{ heroFluxRef }}" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;opacity:.55;">
+      <defs>
+        <linearGradient id="fluxg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#2c5f47" stop-opacity="0"/>
+          <stop offset="0.5" stop-color="#57d99a"/>
+          <stop offset="1" stop-color="#2c5f47" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path d="M-50,250 C300,120 520,420 820,300 C1080,200 1240,460 1520,340" fill="none" stroke="url(#fluxg)" stroke-width="1.4" stroke-dasharray="14 12" style="animation:ykFlow 22s linear infinite;"/>
+      <path d="M-50,520 C260,640 560,400 860,560 C1120,700 1280,480 1520,600" fill="none" stroke="url(#fluxg)" stroke-width="1.4" stroke-dasharray="10 16" style="animation:ykFlow 30s linear infinite;"/>
+      <path d="M-50,720 C340,800 600,620 900,740 C1160,840 1320,660 1520,760" fill="none" stroke="url(#fluxg)" stroke-width="1.2" stroke-dasharray="6 18" style="animation:ykFlow 26s linear infinite;"/>
+    </svg>
+    <!-- glow blobs -->
+    <div ref="{{ heroGlow1 }}" style="position:absolute;top:8%;right:6%;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(87,217,154,.20),transparent 65%);filter:blur(20px);animation:ykGlow 9s ease-in-out infinite;"></div>
+    <div ref="{{ heroGlow2 }}" style="position:absolute;bottom:2%;left:-4%;width:440px;height:440px;border-radius:50%;background:radial-gradient(circle,rgba(31,74,54,.55),transparent 70%);filter:blur(30px);"></div>
+
+    <div style="position:relative;z-index:5;width:100%;max-width:1240px;margin:0 auto;padding:120px clamp(20px,5vw,64px) 90px;">
+      <div data-hero-fade style="opacity:0;transform:translateY(30px);transition:opacity 1.1s cubic-bezier(.16,.84,.34,1),transform 1.1s cubic-bezier(.16,.84,.34,1);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:30px;">
+          <span style="width:46px;height:1px;background:#57d99a;"></span>
+          <span style="font-size:12.5px;letter-spacing:.42em;text-transform:uppercase;color:#7fd9ab;font-weight:600;">Portfolio · Génie industriel</span>
+        </div>
+        <h1 style="font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(3.2rem,10vw,9.2rem);line-height:.92;margin:0;color:#f1faf4;letter-spacing:-.01em;text-wrap:balance;">
+          Youssouf<br><span style="font-style:italic;font-weight:500;color:#cdeede;">Kanté</span>
+        </h1>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:34px;">
+          <span style="font-size:clamp(15px,1.6vw,18px);letter-spacing:.06em;color:#bcd4c8;font-weight:500;">Étudiant BUT QLIO</span>
+          <span style="width:5px;height:5px;border-radius:50%;background:#57d99a;"></span>
+          <span style="font-size:clamp(13px,1.4vw,15px);letter-spacing:.22em;text-transform:uppercase;color:#7e978a;font-weight:600;">Qualité · Logistique · Amélioration continue</span>
+        </div>
+        <p style="margin:34px 0 0;max-width:600px;font-size:clamp(16px,1.7vw,19px);line-height:1.6;color:#a9c2b6;font-weight:300;text-wrap:pretty;">
+          Passionné par l'<b style="color:#dfeee6;font-weight:600;">amélioration continue</b>, l'optimisation des flux et la performance industrielle. Je transforme l'observation du terrain en gains concrets de qualité et de productivité.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:46px;">
+          <a href="#parcours" style="display:inline-flex;align-items:center;gap:12px;text-decoration:none;background:#57d99a;color:#06120b;padding:16px 30px;border-radius:46px;font-weight:700;font-size:15px;letter-spacing:.02em;transition:transform .35s,box-shadow .35s;box-shadow:0 10px 30px rgba(87,217,154,.22);" onMouseOver="{{ ctaHover }}" onMouseOut="{{ ctaOut }}">
+            Découvrir mon parcours <i data-lucide="arrow-down" style="width:17px;height:17px;"></i>
+          </a>
+          <a href="#contact" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;border:1.5px solid #2c5f47;color:#dfeee6;padding:16px 28px;border-radius:46px;font-weight:600;font-size:15px;letter-spacing:.02em;transition:border-color .35s,background .35s;" onMouseOver="{{ ghostHover }}" onMouseOut="{{ ghostOut }}">
+            Me contacter
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- scroll cue -->
+    <div style="position:absolute;bottom:34px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;z-index:5;">
+      <span style="font-size:10.5px;letter-spacing:.34em;text-transform:uppercase;color:#6f8a7c;">Scroll</span>
+      <span style="width:22px;height:36px;border:1.5px solid #2c5f47;border-radius:14px;position:relative;display:block;">
+        <span style="position:absolute;top:7px;left:50%;transform:translateX(-50%);width:3px;height:7px;border-radius:3px;background:#57d99a;animation:ykScroll 1.8s ease-in-out infinite;"></span>
+      </span>
+    </div>
+  </header>
+
+  <!-- ============ MARQUEE STRIP ============ -->
+  <div style="position:relative;background:#0a160f;border-top:1px solid #15291d;border-bottom:1px solid #15291d;overflow:hidden;padding:20px 0;">
+    <div ref="{{ marqueeRef }}" style="display:flex;gap:54px;white-space:nowrap;width:max-content;">
+      <span data-marquee-group style="display:flex;gap:54px;">
+        <span style="font-family:'Playfair Display',serif;font-style:italic;font-size:22px;color:#3f6b54;">Lean Management</span>
+        <span style="color:#57d99a;font-size:22px;">✦</span>
+        <span style="font-family:'Playfair Display',serif;font-style:italic;font-size:22px;color:#3f6b54;">Cartographie des flux</span>
+        <span style="color:#57d99a;font-size:22px;">✦</span>
+        <span style="font-family:'Playfair Display',serif;font-style:italic;font-size:22px;color:#3f6b54;">Kaizen</span>
+        <span style="color:#57d99a;font-size:22px;">✦</span>
+        <span style="font-family:'Playfair Display',serif;font-style:italic;font-size:22px;color:#3f6b54;">5S</span>
+        <span style="color:#57d99a;font-size:22px;">✦</span>
+        <span style="font-family:'Playfair Display',serif;font-style:italic;font-size:22px;color:#3f6b54;">ISO 9001</span>
+        <span style="color:#57d99a;font-size:22px;">✦</span>
+        <span style="font-family:'Playfair Display',serif;font-style:italic;font-size:22px;color:#3f6b54;">Optimisation des processus</span>
+        <span style="color:#57d99a;font-size:22px;">✦</span>
+        <span style="font-family:'Playfair Display',serif;font-style:italic;font-size:22px;color:#3f6b54;">AMDEC</span>
+        <span style="color:#57d99a;font-size:22px;">✦</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- ============ À PROPOS ============ -->
+  <section id="apropos" data-screen-label="À propos" style="position:relative;padding:clamp(90px,12vh,150px) clamp(20px,5vw,64px);max-width:1240px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(40px,6vw,90px);align-items:center;">
+      <!-- portrait -->
+      <div data-reveal="left" data-parallax="0.06" style="position:relative;display:flex;justify-content:center;">
+        <div style="position:absolute;inset:auto;width:min(360px,80%);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(87,217,154,.22),transparent 68%);filter:blur(12px);animation:ykGlow 7s ease-in-out infinite;"></div>
+        <div style="position:relative;width:min(380px,86%);">
+          <div style="position:absolute;inset:0;border-radius:30px;border:1px solid #1f4a36;transform:rotate(-5deg);"></div>
+          <div style="position:relative;border-radius:30px;overflow:hidden;background:linear-gradient(180deg,#13291d,#0a160f);border:1px solid #1f4a36;">
+            <img src="assets/youssouf.webp" alt="Youssouf Kanté" style="width:100%;display:block;filter:grayscale(.15) contrast(1.05);"/>
+          </div>
+          <div style="position:absolute;-bottom:0;bottom:18px;left:-18px;background:#070f0a;border:1px solid #1f4a36;border-radius:16px;padding:14px 18px;box-shadow:0 16px 40px rgba(0,0,0,.5);">
+            <div style="font-family:'Playfair Display',serif;font-size:22px;color:#57d99a;line-height:1;">QLIO</div>
+            <div style="font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#7e978a;margin-top:5px;">IUT de Nantes</div>
+          </div>
+        </div>
+      </div>
+      <!-- text -->
+      <div>
+        <div data-reveal style="display:flex;align-items:center;gap:14px;margin-bottom:24px;">
+          <span style="font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#57d99a;font-weight:600;">01 — À propos</span>
+          <span style="flex:1;height:1px;background:#1a3325;"></span>
+        </div>
+        <h2 data-reveal data-reveal-delay="60" style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(2rem,4.4vw,3.4rem);line-height:1.05;margin:0;color:#f1faf4;text-wrap:balance;">
+          Le terrain comme moteur de la <span style="font-style:italic;color:#7fd9ab;">performance</span>.
+        </h2>
+        <p data-reveal data-reveal-delay="120" style="margin:26px 0 0;font-size:17.5px;line-height:1.65;color:#a9c2b6;font-weight:300;text-wrap:pretty;">
+          Étudiant en <b style="color:#dfeee6;font-weight:600;">BUT QLIO</b>, je me passionne pour tout ce qui rend une organisation plus fluide, plus fiable et plus performante. J'aime observer les flux, identifier les irritants et construire des solutions concrètes d'amélioration continue — orienté terrain, mesure et résultat.
+        </p>
+        <p data-reveal data-reveal-delay="170" style="margin:16px 0 0;font-size:17.5px;line-height:1.65;color:#a9c2b6;font-weight:300;text-wrap:pretty;">
+          Mon approche : <b style="color:#dfeee6;font-weight:600;">comprendre le réel, mesurer, puis optimiser</b>, au service de la qualité, de la logistique et de la performance industrielle.
+        </p>
+
+        <div data-reveal data-reveal-delay="220" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:30px;">
+          <span style="font-size:13.5px;font-weight:600;color:#cdeede;background:#11241a;border:1px solid #1f4a36;border-radius:40px;padding:8px 16px;">Curieux</span>
+          <span style="font-size:13.5px;font-weight:600;color:#cdeede;background:#11241a;border:1px solid #1f4a36;border-radius:40px;padding:8px 16px;">Créatif</span>
+          <span style="font-size:13.5px;font-weight:600;color:#cdeede;background:#11241a;border:1px solid #1f4a36;border-radius:40px;padding:8px 16px;">Adaptable</span>
+          <span style="font-size:13.5px;font-weight:600;color:#cdeede;background:#11241a;border:1px solid #1f4a36;border-radius:40px;padding:8px 16px;">Esprit d'équipe</span>
+          <span style="font-size:13.5px;font-weight:600;color:#cdeede;background:#11241a;border:1px solid #1f4a36;border-radius:40px;padding:8px 16px;">Bon relationnel</span>
+          <span style="font-size:13.5px;font-weight:600;color:#cdeede;background:#11241a;border:1px solid #1f4a36;border-radius:40px;padding:8px 16px;">Motivé</span>
+        </div>
+
+        <div data-reveal data-reveal-delay="280" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;margin-top:36px;background:#1a3325;border:1px solid #1a3325;border-radius:18px;overflow:hidden;">
+          <div style="background:#0c1812;padding:20px 18px;">
+            <div data-count="2024" data-count-suffix="" style="font-family:'Playfair Display',serif;font-size:30px;color:#57d99a;line-height:1;">2024</div>
+            <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#7e978a;margin-top:8px;">Début BUT</div>
+          </div>
+          <div style="background:#0c1812;padding:20px 18px;">
+            <div data-count="2" data-count-suffix="" style="font-family:'Playfair Display',serif;font-size:30px;color:#57d99a;line-height:1;">2</div>
+            <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#7e978a;margin-top:8px;">Expériences terrain</div>
+          </div>
+          <div style="background:#0c1812;padding:20px 18px;">
+            <div data-count="5" data-count-suffix="" style="font-family:'Playfair Display',serif;font-size:30px;color:#57d99a;line-height:1;">5</div>
+            <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#7e978a;margin-top:8px;">Domaines de compétence</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PARCOURS ============ -->
+  <section id="parcours" data-screen-label="Parcours" style="position:relative;background:#0a160f;border-top:1px solid #15291d;padding:clamp(90px,12vh,150px) clamp(20px,5vw,64px);">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div data-reveal style="text-align:center;margin-bottom:18px;">
+        <span style="font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#57d99a;font-weight:600;">02 — Parcours</span>
+      </div>
+      <h2 data-reveal data-reveal-delay="60" style="text-align:center;font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(2rem,4.6vw,3.6rem);line-height:1.05;margin:0 0 16px;color:#f1faf4;">
+        Une formation tournée vers <span style="font-style:italic;color:#7fd9ab;">l'industrie</span>
+      </h2>
+      <p data-reveal data-reveal-delay="100" style="text-align:center;max-width:620px;margin:0 auto 70px;color:#92ab9f;font-size:17px;font-weight:300;line-height:1.6;">Du baccalauréat technologique au BUT QLIO, un cap clair : qualité, organisation et pilotage de la performance.</p>
+
+      <div style="position:relative;">
+        <div ref="{{ timelineLineRef }}" style="position:absolute;left:clamp(18px,4vw,50%);top:6px;bottom:6px;width:2px;background:#1a3325;transform:translateX(-1px);"></div>
+        <div ref="{{ timelineFillRef }}" style="position:absolute;left:clamp(18px,4vw,50%);top:6px;width:2px;height:0%;background:linear-gradient(#57d99a,#2c5f47);transform:translateX(-1px);box-shadow:0 0 12px rgba(87,217,154,.5);"></div>
+
+        <!-- node 1 -->
+        <div data-reveal data-tl style="position:relative;display:grid;grid-template-columns:1fr;gap:0;margin-bottom:46px;padding-left:clamp(48px,8vw,0);">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));align-items:start;">
+            <div style="text-align:left;padding-right:clamp(0px,4vw,48px);">
+              <div style="display:none;"></div>
+            </div>
+          </div>
+          <div data-tl-card style="background:linear-gradient(160deg,#11241a,#0c1812);border:1px solid #1f4a36;border-radius:20px;padding:30px 30px;box-shadow:0 18px 50px rgba(0,0,0,.35);">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+              <span style="font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#57d99a;font-weight:700;">2024 — 2027</span>
+              <span style="font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#7e978a;">En cours</span>
+            </div>
+            <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:24px;margin:12px 0 4px;color:#f1faf4;">BUT QLIO</h3>
+            <p style="margin:0 0 18px;color:#92ab9f;font-size:15px;">Qualité, Logistique Industrielle &amp; Organisation · IUT de Nantes</p>
+            <div style="display:flex;flex-wrap:wrap;gap:9px;">
+              <span data-chip>Gestion de production</span>
+              <span data-chip>ERP</span>
+              <span data-chip>Qualité</span>
+              <span data-chip>Lean Management</span>
+              <span data-chip>Logistique</span>
+              <span data-chip>Gestion des stocks</span>
+              <span data-chip>Organisation industrielle</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- node 2 -->
+        <div data-reveal data-reveal-delay="80" data-tl style="position:relative;margin-bottom:0;padding-left:clamp(48px,8vw,0);">
+          <div data-tl-card style="background:#0c1812;border:1px solid #163728;border-radius:20px;padding:30px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+              <span style="font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#57d99a;font-weight:700;">2024</span>
+              <span style="font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#7e978a;">Obtenu</span>
+            </div>
+            <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:24px;margin:12px 0 4px;color:#f1faf4;">Baccalauréat STI2D</h3>
+            <p style="margin:0;color:#92ab9f;font-size:15px;">Sciences &amp; Technologies de l'Industrie et du Développement Durable · Lycée Livet, Nantes</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPÉRIENCES ============ -->
+  <section id="experiences" data-screen-label="Expériences" style="position:relative;padding:clamp(90px,12vh,150px) clamp(20px,5vw,64px);max-width:1240px;margin:0 auto;">
+    <div data-reveal style="margin-bottom:18px;">
+      <span style="font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#57d99a;font-weight:600;">03 — Expériences</span>
+    </div>
+    <h2 data-reveal data-reveal-delay="60" style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(2rem,4.6vw,3.6rem);line-height:1.05;margin:0 0 60px;color:#f1faf4;max-width:760px;text-wrap:balance;">
+      Du flux logistique à la <span style="font-style:italic;color:#7fd9ab;">réorganisation d'atelier</span>
+    </h2>
+
+    <!-- JOHNSON CONTROLS -->
+    <div data-reveal style="background:linear-gradient(160deg,#11241a,#0b1611);border:1px solid #1f4a36;border-radius:26px;padding:clamp(28px,4vw,48px);margin-bottom:34px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(28px,4vw,56px);">
+        <div>
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+            <span style="display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:#163728;border:1px solid #2c5f47;"><i data-lucide="package" style="width:22px;height:22px;color:#57d99a;"></i></span>
+            <div>
+              <div style="font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:#7e978a;">Logistique &amp; amélioration</div>
+              <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:26px;margin:3px 0 0;color:#f1faf4;">Johnson Controls Industries</h3>
+            </div>
+          </div>
+          <p style="color:#a9c2b6;font-size:16px;line-height:1.6;font-weight:300;margin:0 0 22px;text-wrap:pretty;">
+            Immersion en environnement industriel sur la chaîne réception → préparation → expédition, avec une démarche active d'amélioration des postes et de la sécurité.
+          </p>
+          <div style="display:flex;gap:26px;flex-wrap:wrap;">
+            <div><div data-count="7" style="font-family:'Playfair Display',serif;font-size:34px;color:#57d99a;line-height:1;">7</div><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#7e978a;margin-top:6px;">Missions clés</div></div>
+            <div><div data-count="3" style="font-family:'Playfair Display',serif;font-size:34px;color:#57d99a;line-height:1;">3</div><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#7e978a;margin-top:6px;">Postes optimisés</div></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;align-content:start;">
+          <div data-mission><i data-lucide="truck" style="width:16px;height:16px;color:#57d99a;flex:0 0 auto;"></i><span>Découverte réception</span></div>
+          <div data-mission><i data-lucide="clipboard-list" style="width:16px;height:16px;color:#57d99a;flex:0 0 auto;"></i><span>Préparation des commandes</span></div>
+          <div data-mission><i data-lucide="send" style="width:16px;height:16px;color:#57d99a;flex:0 0 auto;"></i><span>Expédition</span></div>
+          <div data-mission><i data-lucide="wrench" style="width:16px;height:16px;color:#57d99a;flex:0 0 auto;"></i><span>Chariots d'amélioration</span></div>
+          <div data-mission><i data-lucide="git-branch" style="width:16px;height:16px;color:#57d99a;flex:0 0 auto;"></i><span>Analyse de processus</span></div>
+          <div data-mission><i data-lucide="shield-check" style="width:16px;height:16px;color:#57d99a;flex:0 0 auto;"></i><span>Amélioration de la sécurité</span></div>
+          <div data-mission><i data-lucide="timer" style="width:16px;height:16px;color:#57d99a;flex:0 0 auto;"></i><span>Optimisation du temps de production</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APF — FEATURE -->
+    <div data-reveal style="position:relative;background:radial-gradient(120% 100% at 85% 0%,#163728 0%,#0c1812 55%);border:1px solid #2c5f47;border-radius:26px;padding:clamp(28px,4vw,52px);overflow:hidden;">
+      <div style="position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(87,217,154,.16),transparent 70%);filter:blur(20px);"></div>
+      <div style="position:relative;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <span style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#06120b;background:#57d99a;padding:5px 12px;border-radius:30px;font-weight:700;">Projet phare</span>
+          <span style="font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:#9fb8ab;">APF Entreprises · Pays de la Loire</span>
+        </div>
+        <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(1.5rem,3vw,2.4rem);line-height:1.1;margin:0 0 18px;color:#f1faf4;max-width:720px;text-wrap:balance;">
+          Optimisation d'implantation d'atelier &amp; organisation des postes de travail
+        </h3>
+        <p style="color:#bcd4c8;font-size:16.5px;line-height:1.65;font-weight:300;margin:0 0 40px;max-width:680px;text-wrap:pretty;">
+          Une mission complète d'amélioration continue : de la <b style="color:#fff;font-weight:600;">cartographie de l'existant</b> jusqu'à la <b style="color:#fff;font-weight:600;">réimplantation</b> des postes, en passant par l'analyse des flux et une démarche Kaizen menée avec les équipes terrain.
+        </p>
+
+        <!-- AVANT / APRÈS spaghetti -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;margin-bottom:42px;">
+          <div data-reveal="scale" style="background:#0a130e;border:1px solid #3a2420;border-radius:18px;padding:22px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+              <span style="font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#e0896f;font-weight:700;">Avant</span>
+              <span style="font-size:11px;color:#7e978a;">Flux enchevêtrés</span>
+            </div>
+            <svg viewBox="0 0 300 180" style="width:100%;height:auto;display:block;">
+              <g fill="#5a6b62">
+                <rect x="30" y="30" width="34" height="24" rx="4"/><rect x="130" y="20" width="34" height="24" rx="4"/><rect x="230" y="44" width="34" height="24" rx="4"/>
+                <rect x="60" y="110" width="34" height="24" rx="4"/><rect x="160" y="120" width="34" height="24" rx="4"/><rect x="220" y="118" width="34" height="24" rx="4"/>
+              </g>
+              <g fill="none" stroke="#c8643f" stroke-width="2" stroke-linecap="round" opacity=".85">
+                <path d="M47,54 C90,90 110,40 147,44"/>
+                <path d="M147,44 C200,70 120,150 77,122"/>
+                <path d="M247,68 C180,90 210,40 147,44"/>
+                <path d="M77,122 C140,160 200,90 177,144"/>
+                <path d="M177,144 C220,170 260,120 237,142"/>
+                <path d="M64,42 C120,20 200,150 237,130"/>
+              </g>
+            </svg>
+          </div>
+          <div data-reveal="scale" data-reveal-delay="120" style="background:#0a130e;border:1px solid #1f4a36;border-radius:18px;padding:22px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+              <span style="font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#57d99a;font-weight:700;">Après</span>
+              <span style="font-size:11px;color:#7e978a;">Flux linéarisés</span>
+            </div>
+            <svg viewBox="0 0 300 180" style="width:100%;height:auto;display:block;">
+              <g fill="#1f4a36">
+                <rect x="24" y="74" width="34" height="32" rx="4"/><rect x="98" y="74" width="34" height="32" rx="4"/><rect x="172" y="74" width="34" height="32" rx="4"/><rect x="246" y="74" width="34" height="32" rx="4"/>
+              </g>
+              <g fill="none" stroke="#57d99a" stroke-width="2.4" stroke-linecap="round">
+                <path d="M58,90 L98,90" stroke-dasharray="6 6" style="animation:ykFlow 6s linear infinite;"/>
+                <path d="M132,90 L172,90" stroke-dasharray="6 6" style="animation:ykFlow 6s linear infinite;"/>
+                <path d="M206,90 L246,90" stroke-dasharray="6 6" style="animation:ykFlow 6s linear infinite;"/>
+              </g>
+              <g fill="#57d99a"><circle cx="98" cy="90" r="3"/><circle cx="172" cy="90" r="3"/><circle cx="246" cy="90" r="3"/></g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- process steps -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:40px;">
+          <div data-step style="--n:1;"><span data-step-n>01</span><i data-lucide="map" style="width:18px;height:18px;color:#57d99a;"></i><span data-step-t>Cartographier l'existant</span></div>
+          <div data-step><span data-step-n>02</span><i data-lucide="activity" style="width:18px;height:18px;color:#57d99a;"></i><span data-step-t>Analyser les flux</span></div>
+          <div data-step><span data-step-n>03</span><i data-lucide="layout-grid" style="width:18px;height:18px;color:#57d99a;"></i><span data-step-t>Réimplanter</span></div>
+          <div data-step><span data-step-n>04</span><i data-lucide="trending-up" style="width:18px;height:18px;color:#57d99a;"></i><span data-step-t>Améliorer en continu</span></div>
+        </div>
+
+        <!-- missions grid -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;">
+          <div data-mission><i data-lucide="map-pinned" style="width:16px;height:16px;color:#57d99a;flex:0 0 auto;"></i><span>Cartographie de l'existant</span></div>
+          <div data-mission><i data-lucide="move" style="width:16px;height:16px;color:#57d99a;flex:0 0 auto;"></i><span>Analyse des flux physiques</span></div>
+          <div data-mission><i data-lucide="network" style="width:16px;height:16px;color:#57d99a;flex:0 0 auto;"></i><span>Analyse des flux d'information</span></div>
+          <div data-mission><i data-lucide="layout-grid" style="width:16px;height:16px;color:#57d99a;flex:0 0 auto;"></i><span>Réimplantation</span></div>
+          <div data-mission><i data-lucide="search-x" style="width:16px;height:16px;color:#57d99a;flex:0 0 auto;"></i><span>Identification des irritants terrain</span></div>
+          <div data-mission><i data-lucide="recycle" style="width:16px;height:16px;color:#57d99a;flex:0 0 auto;"></i><span>Démarche Kaizen</span></div>
+          <div data-mission><i data-lucide="users" style="width:16px;height:16px;color:#57d99a;flex:0 0 auto;"></i><span>Management d'équipe</span></div>
+          <div data-mission><i data-lucide="git-merge" style="width:16px;height:16px;color:#57d99a;flex:0 0 auto;"></i><span>Optimisation des flux</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMPÉTENCES ============ -->
+  <section id="competences" data-screen-label="Compétences" style="position:relative;background:#0a160f;border-top:1px solid #15291d;padding:clamp(90px,12vh,150px) clamp(20px,5vw,64px);">
+    <div style="max-width:1240px;margin:0 auto;">
+      <div data-reveal style="margin-bottom:18px;"><span style="font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#57d99a;font-weight:600;">04 — Compétences</span></div>
+      <h2 data-reveal data-reveal-delay="60" style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(2rem,4.6vw,3.6rem);line-height:1.05;margin:0 0 60px;color:#f1faf4;max-width:760px;text-wrap:balance;">
+        Une boîte à outils <span style="font-style:italic;color:#7fd9ab;">qualité & lean</span>
+      </h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;">
+        <div data-reveal data-skillcard style="grid-column:span 1;">
+          <div data-skill-head><i data-lucide="badge-check" style="width:18px;height:18px;color:#57d99a;"></i><span>Qualité</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span data-chip>ISO 9001</span><span data-chip>SMQ</span><span data-chip>Audits internes</span><span data-chip>Gestion documentaire</span><span data-chip>Indicateurs qualité</span>
+          </div>
+        </div>
+        <div data-reveal data-reveal-delay="60" data-skillcard>
+          <div data-skill-head><i data-lucide="recycle" style="width:18px;height:18px;color:#57d99a;"></i><span>Lean</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span data-chip>Kaizen</span><span data-chip>5S</span><span data-chip>Amélioration continue</span>
+          </div>
+        </div>
+        <div data-reveal data-reveal-delay="120" data-skillcard>
+          <div data-skill-head><i data-lucide="boxes" style="width:18px;height:18px;color:#57d99a;"></i><span>Logistique &amp; Production</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span data-chip>ERP</span><span data-chip>Gestion des stocks</span><span data-chip>Planification</span><span data-chip>Flux physiques</span><span data-chip>Flux d'information</span>
+          </div>
+        </div>
+        <div data-reveal data-reveal-delay="60" data-skillcard>
+          <div data-skill-head><i data-lucide="ruler" style="width:18px;height:18px;color:#57d99a;"></i><span>Outils</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span data-chip>AMDEC</span><span data-chip>Cartographie des flux</span><span data-chip>Analyse de processus</span><span data-chip>Implantation industrielle</span>
+          </div>
+        </div>
+        <div data-reveal data-reveal-delay="120" data-skillcard>
+          <div data-skill-head><i data-lucide="sparkles" style="width:18px;height:18px;color:#57d99a;"></i><span>Soft Skills</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span data-chip>Adaptabilité</span><span data-chip>Communication</span><span data-chip>Créativité</span><span data-chip>Esprit d'équipe</span><span data-chip>Autonomie</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROJETS ============ -->
+  <section id="projets" data-screen-label="Projets" style="position:relative;padding:clamp(90px,12vh,150px) clamp(20px,5vw,64px);max-width:1240px;margin:0 auto;">
+    <div data-reveal style="margin-bottom:18px;"><span style="font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#57d99a;font-weight:600;">05 — Projets</span></div>
+    <h2 data-reveal data-reveal-delay="60" style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(2rem,4.6vw,3.6rem);line-height:1.05;margin:0 0 60px;color:#f1faf4;max-width:760px;text-wrap:balance;">
+      Des projets <span style="font-style:italic;color:#7fd9ab;">concrets</span> et orientés données
+    </h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;">
+      <div data-reveal data-project style="--i:0;">
+        <span data-proj-num>01</span>
+        <i data-lucide="microscope" style="width:24px;height:24px;color:#57d99a;"></i>
+        <h3 data-proj-t>Analyse de composants</h3>
+        <p data-proj-d>Étude et caractérisation de composants pour fiabiliser la production.</p>
+      </div>
+      <div data-reveal data-reveal-delay="60" data-project>
+        <span data-proj-num>02</span>
+        <i data-lucide="cog" style="width:24px;height:24px;color:#57d99a;"></i>
+        <h3 data-proj-t>Procédés de fabrication</h3>
+        <p data-proj-d>Compréhension et optimisation des procédés et gammes de fabrication.</p>
+      </div>
+      <div data-reveal data-reveal-delay="120" data-project>
+        <span data-proj-num>03</span>
+        <i data-lucide="calendar-range" style="width:24px;height:24px;color:#57d99a;"></i>
+        <h3 data-proj-t>Planification industrielle</h3>
+        <p data-proj-d>Ordonnancement et planification pour fluidifier la charge des postes.</p>
+      </div>
+      <div data-reveal data-project>
+        <span data-proj-num>04</span>
+        <i data-lucide="database" style="width:24px;height:24px;color:#57d99a;"></i>
+        <h3 data-proj-t>Gestion de données ERP</h3>
+        <p data-proj-d>Structuration et exploitation des données dans un système ERP.</p>
+      </div>
+      <div data-reveal data-reveal-delay="60" data-project>
+        <span data-proj-num>05</span>
+        <i data-lucide="layout-grid" style="width:24px;height:24px;color:#57d99a;"></i>
+        <h3 data-proj-t>Optimisation d'atelier</h3>
+        <p data-proj-d>Réimplantation des postes et réduction des déplacements inutiles.</p>
+      </div>
+      <div data-reveal data-reveal-delay="120" data-project>
+        <span data-proj-num>06</span>
+        <i data-lucide="git-branch" style="width:24px;height:24px;color:#57d99a;"></i>
+        <h3 data-proj-t>Cartographie des flux</h3>
+        <p data-proj-d>Modélisation des flux physiques et d'information pour cibler les irritants.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ACTIVITÉS ============ -->
+  <section id="activites" data-screen-label="Activités" style="position:relative;background:#0a160f;border-top:1px solid #15291d;padding:clamp(90px,12vh,150px) clamp(20px,5vw,64px);">
+    <div style="max-width:1240px;margin:0 auto;">
+      <div data-reveal style="margin-bottom:18px;"><span style="font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#57d99a;font-weight:600;">06 — Au-delà du bureau</span></div>
+      <h2 data-reveal data-reveal-delay="60" style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(2rem,4.6vw,3.6rem);line-height:1.05;margin:0 0 18px;color:#f1faf4;max-width:760px;text-wrap:balance;">
+        Activités &amp; <span style="font-style:italic;color:#7fd9ab;">centres d'intérêt</span>
+      </h2>
+      <p data-reveal data-reveal-delay="100" style="color:#92ab9f;font-size:17px;font-weight:300;max-width:640px;margin:0 0 56px;line-height:1.6;">Des passions qui forgent l'<b style="color:#cdeede;font-weight:600;">esprit d'équipe</b>, la <b style="color:#cdeede;font-weight:600;">discipline</b>, la <b style="color:#cdeede;font-weight:600;">créativité</b> et l'<b style="color:#cdeede;font-weight:600;">ouverture d'esprit</b>.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+        <div data-reveal data-act style="grid-row:span 2;background:linear-gradient(160deg,#11241a,#0b1611);">
+          <i data-lucide="dumbbell" style="width:26px;height:26px;color:#57d99a;"></i>
+          <h3 data-act-t>Sport</h3>
+          <p data-act-d>10 ans de football, association sportive, SUAPS. La rigueur et le collectif, sur le terrain comme en entreprise.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;">
+            <span data-chip>Football · 10 ans</span><span data-chip>Association sportive</span><span data-chip>SUAPS</span>
+          </div>
+        </div>
+        <div data-reveal data-reveal-delay="60" data-act>
+          <i data-lucide="book-open" style="width:24px;height:24px;color:#57d99a;"></i>
+          <h3 data-act-t>Lecture</h3>
+          <p data-act-d>Science-fiction &amp; webtoon — pour nourrir l'imagination et l'anticipation.</p>
+        </div>
+        <div data-reveal data-reveal-delay="120" data-act>
+          <i data-lucide="film" style="width:24px;height:24px;color:#57d99a;"></i>
+          <h3 data-act-t>Films &amp; séries</h3>
+          <p data-act-d>SF, fantastique, action, aventure, horreur.</p>
+        </div>
+        <div data-reveal data-reveal-delay="60" data-act>
+          <i data-lucide="music" style="width:24px;height:24px;color:#57d99a;"></i>
+          <h3 data-act-t>Musique</h3>
+          <p data-act-d>Tous styles — une ouverture musicale large et curieuse.</p>
+        </div>
+        <div data-reveal data-reveal-delay="120" data-act>
+          <i data-lucide="rocket" style="width:24px;height:24px;color:#57d99a;"></i>
+          <h3 data-act-t>Entrepreneuriat</h3>
+          <p data-act-d>Participation à différents évènements — esprit d'initiative et de projet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact" data-screen-label="Contact" style="position:relative;background:radial-gradient(120% 100% at 20% 0%,#11271b 0%,#070f0a 60%);padding:clamp(90px,12vh,150px) clamp(20px,5vw,64px) 0;">
+    <div style="max-width:1240px;margin:0 auto;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(40px,6vw,80px);">
+        <div>
+          <div data-reveal style="margin-bottom:18px;"><span style="font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#57d99a;font-weight:600;">07 — Contact</span></div>
+          <h2 data-reveal data-reveal-delay="60" style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(2.2rem,5vw,4rem);line-height:1.02;margin:0 0 24px;color:#f1faf4;text-wrap:balance;">
+            Construisons la <span style="font-style:italic;color:#7fd9ab;">performance</span> ensemble.
+          </h2>
+          <p data-reveal data-reveal-delay="100" style="color:#a9c2b6;font-size:17.5px;font-weight:300;line-height:1.6;margin:0 0 36px;max-width:480px;text-wrap:pretty;">
+            À la recherche d'une alternance ou d'un stage en qualité, logistique ou amélioration continue. Échangeons sur vos enjeux d'organisation et de performance industrielle.
+          </p>
+          <div data-reveal data-reveal-delay="140" style="display:flex;flex-direction:column;gap:14px;margin-bottom:34px;">
+            <a href="mailto:youssouf.kante7pro@gmail.com" data-contact-row><span data-cic><i data-lucide="mail" style="width:18px;height:18px;color:#57d99a;"></i></span><span><span data-cl>Email</span><span data-cv>youssouf.kante7pro@gmail.com</span></span></a>
+            <a href="tel:+33782151598" data-contact-row><span data-cic><i data-lucide="phone" style="width:18px;height:18px;color:#57d99a;"></i></span><span><span data-cl>Téléphone</span><span data-cv>07 82 15 15 98</span></span></a>
+            <a href="https://www.linkedin.com/in/youssouf-kanté" target="_blank" rel="noopener" data-contact-row><span data-cic><i data-lucide="linkedin" style="width:18px;height:18px;color:#57d99a;"></i></span><span><span data-cl>LinkedIn</span><span data-cv>youssouf-kanté</span></span></a>
+            <div data-contact-row style="cursor:default;"><span data-cic><i data-lucide="map-pin" style="width:18px;height:18px;color:#57d99a;"></i></span><span><span data-cl>Localisation</span><span data-cv>Nantes, France</span></span></div>
+          </div>
+          <a href="assets/cv-youssouf-kante.pdf" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:12px;text-decoration:none;background:#57d99a;color:#06120b;padding:16px 30px;border-radius:46px;font-weight:700;font-size:15px;letter-spacing:.02em;transition:transform .35s,box-shadow .35s;box-shadow:0 10px 30px rgba(87,217,154,.22);" onMouseOver="{{ ctaHover }}" onMouseOut="{{ ctaOut }}">
+            <i data-lucide="download" style="width:18px;height:18px;"></i> Télécharger mon CV
+          </a>
+        </div>
+
+        <!-- form -->
+        <form data-reveal data-reveal-delay="120" onSubmit="{{ handleSubmit }}" style="background:rgba(12,24,18,.7);backdrop-filter:blur(8px);border:1px solid #1f4a36;border-radius:24px;padding:clamp(26px,3.5vw,40px);align-self:start;">
+          <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:22px;margin:0 0 22px;color:#f1faf4;">Envoyez-moi un message</h3>
+          <label data-field><span data-flabel>Nom</span><input type="text" name="nom" required placeholder="Votre nom" data-input onFocus="{{ inFocus }}" onBlur="{{ inBlur }}"/></label>
+          <label data-field><span data-flabel>Email</span><input type="email" name="email" required placeholder="vous@entreprise.com" data-input onFocus="{{ inFocus }}" onBlur="{{ inBlur }}"/></label>
+          <label data-field><span data-flabel>Message</span><textarea name="message" rows="4" required placeholder="Votre message…" data-input style="resize:vertical;" onFocus="{{ inFocus }}" onBlur="{{ inBlur }}"></textarea></label>
+          <button type="submit" style="width:100%;margin-top:6px;display:inline-flex;align-items:center;justify-content:center;gap:10px;background:#57d99a;color:#06120b;border:none;padding:15px;border-radius:14px;font-weight:700;font-size:15px;cursor:pointer;font-family:'Source Sans 3',sans-serif;transition:transform .3s,box-shadow .3s;" onMouseOver="{{ ctaHover }}" onMouseOut="{{ ctaOut }}">
+            <span>{{ submitLabel }}</span> <i data-lucide="send" style="width:16px;height:16px;"></i>
+          </button>
+          <p style="margin:14px 0 0;font-size:12.5px;color:#6f8a7c;text-align:center;">{{ submitNote }}</p>
+        </form>
+      </div>
+
+      <!-- footer -->
+      <footer style="margin-top:clamp(70px,10vh,120px);border-top:1px solid #15291d;padding:34px 0;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="display:grid;place-items:center;width:38px;height:38px;border:1.5px solid #2c5f47;border-radius:11px;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#57d99a;">YK</span>
+          <span style="font-size:13px;color:#7e978a;">Youssouf Kanté — Étudiant BUT QLIO · Nantes</span>
+        </div>
+        <span style="font-size:12.5px;color:#5a6b62;">© 2026 · Qualité · Logistique · Amélioration continue</span>
+      </footer>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.rootRef = React.createRef();
+    this.navRef = React.createRef();
+    this.menuRef = React.createRef();
+    this.progressRef = React.createRef();
+    this.heroGridRef = React.createRef();
+    this.heroFluxRef = React.createRef();
+    this.heroGlow1 = React.createRef();
+    this.heroGlow2 = React.createRef();
+    this.marqueeRef = React.createRef();
+    this.timelineLineRef = React.createRef();
+    this.timelineFillRef = React.createRef();
+    this.state = { submitLabel: "Envoyer", submitNote: "Réponse sous 48h en général.", menuOpen:false };
+    this._raf = null;
+  }
+
+  componentDidMount(){
+    this.injectStyles();
+    if(window.lucide) window.lucide.createIcons();
+    requestAnimationFrame(()=>{ this.runIcons(); this.heroIn(); });
+    this.setupReveal();
+    this.setupCounters();
+    this.bindScroll();
+    this.bindMouse();
+    this.startMarquee();
+  }
+  componentWillUnmount(){
+    window.removeEventListener('scroll', this._onScroll);
+    window.removeEventListener('mousemove', this._onMouse);
+    if(this._raf) cancelAnimationFrame(this._raf);
+    if(this._marq) cancelAnimationFrame(this._marq);
+  }
+
+  root(){ return this.rootRef.current || document; }
+  runIcons(){ try{ if(window.lucide) window.lucide.createIcons(); }catch(e){} }
+
+  // inject the small bits that truly can't be inline (attribute-hooked component styles)
+  injectStyles(){
+    if(document.getElementById('yk-comp-styles')) return;
+    const s = document.createElement('style');
+    s.id = 'yk-comp-styles';
+    s.textContent = `
+      [data-nav-links] a{white-space:nowrap;}
+      [data-chip]{font-size:13px;font-weight:600;color:#bcd4c8;background:#11241a;border:1px solid #1f4a36;border-radius:40px;padding:7px 14px;line-height:1.2;transition:background .3s,color .3s,border-color .3s;}
+      [data-chip]:hover{background:#1f4a36;color:#eafff3;border-color:#57d99a;}
+      [data-mission]{display:flex;align-items:center;gap:10px;background:#0c1812;border:1px solid #15291d;border-radius:12px;padding:13px 15px;font-size:14px;color:#cfe2d8;transition:transform .35s,border-color .35s,background .35s;}
+      [data-mission]:hover{transform:translateY(-3px);border-color:#2c5f47;background:#11241a;}
+      [data-step]{position:relative;display:flex;flex-direction:column;gap:10px;background:#0a130e;border:1px solid #1f4a36;border-radius:16px;padding:20px 18px;overflow:hidden;}
+      [data-step-n]{font-family:'Playfair Display',serif;font-size:13px;color:#57d99a;letter-spacing:.1em;}
+      [data-step-t]{font-size:14.5px;color:#dfeee6;font-weight:600;line-height:1.25;}
+      [data-skillcard]{background:linear-gradient(160deg,#0f1f17,#0a130e);border:1px solid #1f4a36;border-radius:20px;padding:26px 24px;transition:transform .4s,border-color .4s,box-shadow .4s;}
+      [data-skillcard]:hover{transform:translateY(-5px);border-color:#2c5f47;box-shadow:0 20px 50px rgba(0,0,0,.4);}
+      [data-skill-head]{display:flex;align-items:center;gap:10px;font-family:'Playfair Display',serif;font-weight:600;font-size:19px;color:#f1faf4;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #1a3325;}
+      [data-project]{position:relative;display:flex;flex-direction:column;gap:14px;background:linear-gradient(160deg,#0f1f17,#0a130e);border:1px solid #1a3325;border-radius:20px;padding:30px 26px;overflow:hidden;transition:transform .4s,border-color .4s,box-shadow .4s;}
+      [data-project]:hover{transform:translateY(-6px);border-color:#57d99a;box-shadow:0 24px 60px rgba(0,0,0,.45);}
+      [data-project]::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#57d99a,transparent);transform:scaleX(0);transform-origin:left;transition:transform .5s;}
+      [data-project]:hover::before{transform:scaleX(1);}
+      [data-proj-num]{position:absolute;top:18px;right:22px;font-family:'Playfair Display',serif;font-size:30px;color:#16301f;font-weight:700;transition:color .4s;}
+      [data-project]:hover [data-proj-num]{color:#234433;}
+      [data-proj-t]{font-family:'Playfair Display',serif;font-weight:600;font-size:20px;margin:0;color:#f1faf4;}
+      [data-proj-d]{margin:0;font-size:14.5px;line-height:1.55;color:#92ab9f;font-weight:300;}
+      [data-act]{display:flex;flex-direction:column;gap:12px;background:#0c1812;border:1px solid #1a3325;border-radius:20px;padding:26px 24px;transition:transform .4s,border-color .4s;}
+      [data-act]:hover{transform:translateY(-5px);border-color:#2c5f47;}
+      [data-act-t]{font-family:'Playfair Display',serif;font-weight:600;font-size:20px;margin:0;color:#f1faf4;}
+      [data-act-d]{margin:0;font-size:14.5px;line-height:1.55;color:#92ab9f;font-weight:300;}
+      [data-contact-row]{display:flex;align-items:center;gap:16px;text-decoration:none;background:#0c1812;border:1px solid #15291d;border-radius:14px;padding:14px 18px;transition:transform .3s,border-color .3s,background .3s;}
+      a[data-contact-row]:hover{transform:translateX(5px);border-color:#2c5f47;background:#11241a;}
+      [data-cic]{display:grid;place-items:center;width:42px;height:42px;border-radius:11px;background:#11241a;border:1px solid #1f4a36;flex:0 0 auto;}
+      [data-cl]{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#7e978a;margin-bottom:3px;}
+      [data-cv]{display:block;font-size:15px;color:#dfeee6;font-weight:500;}
+      [data-field]{display:block;margin-bottom:16px;}
+      [data-flabel]{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#7e978a;margin-bottom:7px;}
+      [data-input]{width:100%;background:#0a130e;border:1px solid #1f4a36;border-radius:12px;padding:13px 15px;color:#eafff3;font-size:15px;font-family:'Source Sans 3',sans-serif;transition:border-color .3s,box-shadow .3s;}
+      [data-input]::placeholder{color:#5a6b62;}
+      [data-input]:focus{outline:none;border-color:#57d99a;box-shadow:0 0 0 3px rgba(87,217,154,.14);}
+    `;
+    document.head.appendChild(s);
+  }
+
+  heroIn(){
+    const el = this.root().querySelector('[data-hero-fade]');
+    if(el){ el.style.opacity='1'; el.style.transform='translateY(0)'; }
+  }
+
+  setupReveal(){
+    const els = Array.from(this.root().querySelectorAll('[data-reveal]'));
+    if(!('IntersectionObserver' in window)){ els.forEach(e=>{e.style.opacity='1';e.style.transform='none';}); return; }
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          const el = e.target;
+          const d = parseInt(el.getAttribute('data-reveal-delay')||'0',10);
+          setTimeout(()=>{ el.style.opacity='1'; el.style.transform='none'; }, d);
+          io.unobserve(el);
+        }
+      });
+    }, { threshold:0.12, rootMargin:'0px 0px -8% 0px' });
+    els.forEach(el=>io.observe(el));
+  }
+
+  setupCounters(){
+    const els = Array.from(this.root().querySelectorAll('[data-count]'));
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){ this.animateCount(e.target); io.unobserve(e.target); }
+      });
+    }, { threshold:0.4 });
+    els.forEach(el=>io.observe(el));
+  }
+  animateCount(el){
+    const target = parseInt(el.getAttribute('data-count'),10);
+    const suffix = el.getAttribute('data-count-suffix')||'';
+    const dur = 1300; const start = performance.now();
+    const tick = (now)=>{
+      const p = Math.min(1,(now-start)/dur);
+      const eased = 1-Math.pow(1-p,3);
+      el.textContent = Math.round(target*eased) + suffix;
+      if(p<1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  bindScroll(){
+    this._onScroll = ()=>{
+      if(this._raf) return;
+      this._raf = requestAnimationFrame(()=>{
+        const y = window.scrollY || window.pageYOffset;
+        const h = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = h>0 ? (y/h)*100 : 0;
+        if(this.progressRef.current) this.progressRef.current.style.width = pct + '%';
+        // nav bg
+        const nav = this.navRef.current;
+        if(nav){
+          if(y>40){ nav.style.background='rgba(7,15,10,.82)'; nav.style.backdropFilter='blur(14px)'; nav.style.padding='14px clamp(20px,5vw,64px)'; nav.style.borderBottom='1px solid #15291d'; }
+          else { nav.style.background='transparent'; nav.style.backdropFilter='none'; nav.style.padding='22px clamp(20px,5vw,64px)'; nav.style.borderBottom='1px solid transparent'; }
+        }
+        // hero parallax
+        if(this.heroFluxRef.current) this.heroFluxRef.current.style.transform = 'translateY('+(y*0.18)+'px)';
+        if(this.heroGridRef.current) this.heroGridRef.current.style.transform = 'translateY('+(y*0.08)+'px)';
+        if(this.heroGlow1.current) this.heroGlow1.current.style.transform = 'translateY('+(y*0.26)+'px)';
+        // generic parallax
+        this.root().querySelectorAll('[data-parallax]').forEach(el=>{
+          const r = el.getBoundingClientRect();
+          const speed = parseFloat(el.getAttribute('data-parallax'))||0;
+          const off = (r.top + r.height/2 - window.innerHeight/2);
+          el.style.transform = 'translateY('+(-off*speed)+'px)';
+        });
+        // timeline fill
+        const fill = this.timelineFillRef.current; const line = this.timelineLineRef.current;
+        if(fill && line){
+          const lr = line.getBoundingClientRect();
+          const vis = Math.min(1, Math.max(0, (window.innerHeight*0.6 - lr.top) / lr.height));
+          fill.style.height = (vis*100) + '%';
+        }
+        this._raf = null;
+      });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive:true });
+    this._onScroll();
+  }
+
+  bindMouse(){
+    this._onMouse = (e)=>{
+      const cx = (e.clientX/window.innerWidth - 0.5);
+      const cy = (e.clientY/window.innerHeight - 0.5);
+      if(this.heroGlow1.current) this.heroGlow1.current.style.marginLeft = (cx*-30)+'px';
+      if(this.heroGlow2.current) this.heroGlow2.current.style.marginLeft = (cx*24)+'px';
+    };
+    window.addEventListener('mousemove', this._onMouse, { passive:true });
+  }
+
+  startMarquee(){
+    const wrap = this.marqueeRef.current;
+    if(!wrap) return;
+    const group = wrap.querySelector('[data-marquee-group]');
+    if(!group) return;
+    // clone for seamless loop
+    const clone = group.cloneNode(true); wrap.appendChild(clone);
+    let x = 0; const speed = 0.4;
+    const step = ()=>{
+      x -= speed;
+      const gw = group.getBoundingClientRect().width + 54;
+      if(Math.abs(x) >= gw) x = 0;
+      wrap.style.transform = 'translateX('+x+'px)';
+      this._marq = requestAnimationFrame(step);
+    };
+    this._marq = requestAnimationFrame(step);
+  }
+
+  toggleMenu = ()=>{
+    const m = this.menuRef.current; if(!m) return;
+    const open = m.style.display === 'flex';
+    m.style.display = open ? 'none' : 'flex';
+    document.body.style.overflow = open ? '' : 'hidden';
+  }
+
+  navHover = (e)=>{ e.currentTarget.style.color = '#57d99a'; }
+  navOut = (e)=>{ e.currentTarget.style.color = '#cfe2d8'; }
+  ctaHover = (e)=>{ e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.boxShadow='0 16px 40px rgba(87,217,154,.35)'; }
+  ctaOut = (e)=>{ e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='0 10px 30px rgba(87,217,154,.22)'; }
+  ghostHover = (e)=>{ e.currentTarget.style.borderColor='#57d99a'; e.currentTarget.style.background='rgba(31,74,54,.3)'; }
+  ghostOut = (e)=>{ e.currentTarget.style.borderColor='#2c5f47'; e.currentTarget.style.background='transparent'; }
+  inFocus = (e)=>{}; inBlur = (e)=>{};
+
+  handleSubmit = (e)=>{
+    e.preventDefault();
+    this.setState({ submitLabel:'Message envoyé ✓', submitNote:'Merci ! Je vous réponds très vite.' });
+    try{ e.target.reset(); }catch(_){}
+    setTimeout(()=>this.setState({ submitLabel:'Envoyer' }), 4000);
+  }
+
+  renderVals(){
+    return {
+      rootRef:this.rootRef, navRef:this.navRef, menuRef:this.menuRef, progressRef:this.progressRef,
+      heroGridRef:this.heroGridRef, heroFluxRef:this.heroFluxRef, heroGlow1:this.heroGlow1, heroGlow2:this.heroGlow2,
+      marqueeRef:this.marqueeRef, timelineLineRef:this.timelineLineRef, timelineFillRef:this.timelineFillRef,
+      navHover:this.navHover, navOut:this.navOut, ctaHover:this.ctaHover, ctaOut:this.ctaOut,
+      ghostHover:this.ghostHover, ghostOut:this.ghostOut, toggleMenu:this.toggleMenu,
+      handleSubmit:this.handleSubmit, inFocus:this.inFocus, inBlur:this.inBlur,
+      submitLabel:this.state.submitLabel, submitNote:this.state.submitNote
+    };
+  }
+}
+</script>
+</body>
+</html>

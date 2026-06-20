@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:#070707;}
+  body{font-family:'Jost',sans-serif;-webkit-font-smoothing:antialiased;}
+  @keyframes ykScrollDot{0%{transform:translateY(0);opacity:0;}30%{opacity:1;}100%{transform:translateY(16px);opacity:0;}}
+  @keyframes ykCaret{0%,45%{opacity:1;}55%,100%{opacity:0;}}
+  @media (max-width:860px){ [data-nav-links]{display:none!important;} [data-burger]{display:flex!important;} }
+</style>
+</helmet>
+
+<div ref="{{ rootRef }}" style="position:relative;width:100%;height:100vh;min-height:600px;overflow:hidden;background:radial-gradient(115% 92% at 50% 47%,#6b6258 0%,#564b42 33%,#3a2f25 64%,#221b13 100%);font-family:'Jost',sans-serif;">
+
+  <!-- ===== PORTHOLE STAGE ===== -->
+  <div ref="{{ stageRef }}" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(1.04);opacity:0;height:min(106vh,140vw);aspect-ratio:1023/1537;z-index:1;">
+
+    <!-- animated sky -->
+    <div ref="{{ skyRef }}" style="position:absolute;top:48.5%;left:49.9%;transform:translate(-50%,-50%);width:50%;height:53%;overflow:hidden;border-radius:42%/30%;background:linear-gradient(180deg,#5b94c7 0%,#83b3db 42%,#b6d4e6 78%,#d7e6ee 100%);">
+      <div ref="{{ hueRef }}" style="position:absolute;inset:0;background:linear-gradient(180deg,#4d86bd 0%,#9cc4e2 60%,#e4eef2 100%);opacity:0;"></div>
+      <!-- far clouds -->
+      <div ref="{{ farRef }}" style="position:absolute;inset:-6% -6%;will-change:transform;">
+        <div ref="{{ farTrackRef }}" style="position:absolute;inset:0;display:flex;width:200%;opacity:.7;">
+          <img src="assets/cloud-far.png" style="width:50%;height:100%;object-fit:cover;display:block;"/>
+          <img src="assets/cloud-far.png" style="width:50%;height:100%;object-fit:cover;display:block;"/>
+        </div>
+      </div>
+      <!-- near clouds -->
+      <div ref="{{ nearRef }}" style="position:absolute;inset:-10% -10%;will-change:transform;">
+        <div ref="{{ nearTrackRef }}" style="position:absolute;inset:0;display:flex;width:200%;">
+          <img src="assets/cloud-near.png" style="width:50%;height:100%;object-fit:cover;display:block;"/>
+          <img src="assets/cloud-near.png" style="width:50%;height:100%;object-fit:cover;display:block;"/>
+        </div>
+      </div>
+      <!-- moving light -->
+      <div ref="{{ lightRef }}" style="position:absolute;top:-20%;left:-10%;width:90%;height:90%;background:radial-gradient(circle,rgba(255,255,255,.55),transparent 62%);mix-blend-mode:screen;pointer-events:none;opacity:.3;"></div>
+      <!-- atmospheric edge vignette -->
+      <div style="position:absolute;inset:0;background:radial-gradient(80% 78% at 50% 46%,transparent 52%,rgba(86,140,190,.32) 88%,rgba(58,104,160,.5) 100%);pointer-events:none;"></div>
+    </div>
+
+    <!-- porthole frame (masks sky to the opening) -->
+    <img ref="{{ frameRef }}" src="assets/hublot-final.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;display:block;z-index:2;pointer-events:none;"/>
+  </div>
+
+  <!-- ===== UI OVERLAY ===== -->
+  <div style="position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;pointer-events:none;">
+
+    <!-- nav -->
+    <nav ref="{{ navRef }}" style="display:flex;align-items:center;justify-content:space-between;padding:26px clamp(24px,5vw,64px);pointer-events:auto;opacity:0;">
+      <a href="#accueil" style="text-decoration:none;display:flex;align-items:center;gap:11px;">
+        <span style="display:grid;place-items:center;width:34px;height:34px;border:1px solid rgba(239,231,216,.5);border-radius:50%;"><span style="width:8px;height:8px;border-radius:50%;background:#e9dfce;"></span></span>
+        <span style="font-family:'Jost',sans-serif;font-weight:400;font-size:18px;letter-spacing:.34em;color:#efe7d8;padding-left:2px;">YOUSSOUF&nbsp;KANTÉ</span>
+      </a>
+      <div data-nav-links style="display:flex;gap:30px;align-items:center;">
+        <a href="#apropos" style="text-decoration:none;font-size:11.5px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:#d8cebd;transition:color .3s;" onMouseOver="{{ linkOver }}" onMouseOut="{{ linkOut }}">À propos</a>
+        <a href="#competences" style="text-decoration:none;font-size:11.5px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:#d8cebd;transition:color .3s;" onMouseOver="{{ linkOver }}" onMouseOut="{{ linkOut }}">Compétences</a>
+        <a href="#experiences" style="text-decoration:none;font-size:11.5px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:#d8cebd;transition:color .3s;" onMouseOver="{{ linkOver }}" onMouseOut="{{ linkOut }}">Expériences</a>
+        <a href="#projets" style="text-decoration:none;font-size:11.5px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:#d8cebd;transition:color .3s;" onMouseOver="{{ linkOver }}" onMouseOut="{{ linkOut }}">Projets</a>
+        <a href="#parcours" style="text-decoration:none;font-size:11.5px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:#d8cebd;transition:color .3s;" onMouseOver="{{ linkOver }}" onMouseOut="{{ linkOut }}">Parcours</a>
+      </div>
+      <a href="#contact" style="text-decoration:none;font-size:11px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:#2a221b;background:#efe7d8;padding:11px 22px;border-radius:40px;transition:transform .3s,background .3s;" onMouseOver="{{ ctaOver }}" onMouseOut="{{ ctaOut }}">Contact</a>
+    </nav>
+
+    <!-- title (upper) -->
+    <div style="flex:0 0 auto;text-align:center;padding:clamp(8px,3vh,30px) 20px 0;">
+      <p ref="{{ kickerRef }}" style="margin:0 0 clamp(12px,2vh,22px);font-size:12px;font-weight:400;letter-spacing:.46em;text-transform:uppercase;color:#cbbda9;padding-left:.5em;opacity:0;">Portfolio · BUT QLIO</p>
+      <h1 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(2.4rem,6vw,5.4rem);line-height:1.0;color:#f3ecde;letter-spacing:.005em;min-height:1.1em;">
+        <span ref="{{ nameRef }}"></span><span ref="{{ caretRef }}" style="display:inline-block;width:2px;height:.92em;background:#e7dcc8;margin-left:4px;vertical-align:-.06em;opacity:0;"></span>
+      </h1>
+      <p ref="{{ tagRef }}" style="margin:clamp(12px,2vh,20px) 0 0;font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:400;font-size:clamp(1.3rem,2.6vw,2rem);color:#e3d7c2;opacity:0;">Bienvenue à bord de mon parcours.</p>
+    </div>
+
+    <div style="flex:1 1 auto;"></div>
+
+    <!-- CTA (lower) -->
+    <div ref="{{ ctaWrapRef }}" style="flex:0 0 auto;text-align:center;padding:0 20px clamp(30px,5vh,56px);pointer-events:auto;opacity:0;">
+      <p style="margin:0 auto clamp(18px,3vh,26px);max-width:480px;font-size:14.5px;font-weight:300;line-height:1.65;color:#cdbfab;">Étudiant en BUT QLIO, passionné par l'amélioration continue, la qualité, les méthodes industrielles et l'innovation.</p>
+      <div style="display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;">
+        <a href="#apropos" onClick="{{ embark }}" style="display:inline-flex;align-items:center;gap:11px;text-decoration:none;font-size:12px;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:#f1ece1;background:#163728;padding:16px 30px;border-radius:46px;transition:transform .35s,box-shadow .35s,background .35s;box-shadow:0 14px 40px rgba(12,28,19,.4);" onMouseOver="{{ greenOver }}" onMouseOut="{{ greenOut }}">
+          Découvrir mon univers <i data-lucide="arrow-up-right" style="width:15px;height:15px;"></i>
+        </a>
+        <a href="#projets" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-size:12px;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:#e7dcc8;border:1px solid rgba(231,220,200,.4);padding:16px 28px;border-radius:46px;transition:border-color .35s,background .35s;" onMouseOver="{{ ghostOver }}" onMouseOut="{{ ghostOut }}">
+          Voir mes projets
+        </a>
+      </div>
+    </div>
+
+    <!-- scroll hint -->
+    <div ref="{{ scrollHintRef }}" style="position:absolute;bottom:18px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;">
+      <span style="font-size:9.5px;letter-spacing:.34em;text-transform:uppercase;color:#a99a86;">Défiler</span>
+      <span style="width:1px;height:30px;background:linear-gradient(#a99a86,transparent);position:relative;overflow:hidden;"><span style="position:absolute;top:0;left:-1px;width:3px;height:8px;border-radius:2px;background:#e9dfce;animation:ykScrollDot 2s ease-in-out infinite;"></span></span>
+    </div>
+  </div>
+
+  <!-- intro black veil -->
+  <div ref="{{ veilRef }}" style="position:absolute;inset:0;z-index:20;background:#070707;pointer-events:none;"></div>
+  <!-- embark white-out -->
+  <div ref="{{ embarkRef }}" style="position:absolute;inset:0;z-index:30;background:#eef4f8;opacity:0;pointer-events:none;"></div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    ['rootRef','stageRef','skyRef','hueRef','farRef','nearRef','farTrackRef','nearTrackRef','lightRef','frameRef','navRef','kickerRef','nameRef','caretRef','tagRef','ctaWrapRef','scrollHintRef','veilRef','embarkRef'].forEach(r=>this[r]=React.createRef());
+    this._loops=[];
+  }
+
+  componentDidMount(){
+    try{ if(window.lucide) window.lucide.createIcons(); }catch(e){}
+    this.waitFor(()=>window.gsap, ()=>this.run(), 7000, ()=>this.fallback());
+    this._onMove=(e)=>{
+      const nx=(e.clientX/window.innerWidth-0.5), ny=(e.clientY/window.innerHeight-0.5);
+      if(this.farRef.current)  this.farRef.current.style.transform='translate('+(nx*7)+'px,'+(ny*5)+'px)';
+      if(this.nearRef.current) this.nearRef.current.style.transform='translate('+(nx*16)+'px,'+(ny*10)+'px)';
+      if(this.frameRef.current && this._introDone) this.frameRef.current.style.transform='translate('+(nx*-2.5)+'px,'+(ny*-2)+'px)';
+    };
+    window.addEventListener('mousemove', this._onMove, { passive:true });
+  }
+  componentWillUnmount(){
+    window.removeEventListener('mousemove', this._onMove);
+    this._loops.forEach(t=>{ try{ t.kill(); }catch(e){} });
+  }
+  waitFor(cond, ok, timeout, fail){ if(cond())return ok(); const t0=Date.now(); const iv=setInterval(()=>{ if(cond()){clearInterval(iv);ok();} else if(Date.now()-t0>timeout){clearInterval(iv);fail&&fail();} },50); }
+
+  ambientLoops(){
+    const g=window.gsap;
+    // infinite cloud drift (seamless: -50% of the 200%-wide track)
+    if(this.farTrackRef.current)  this._loops.push(g.to(this.farTrackRef.current,{ xPercent:-50, duration:240, ease:'none', repeat:-1 }));
+    if(this.nearTrackRef.current) this._loops.push(g.to(this.nearTrackRef.current,{ xPercent:-50, duration:150, ease:'none', repeat:-1 }));
+    // subtle hue breathing
+    if(this.hueRef.current) this._loops.push(g.to(this.hueRef.current,{ opacity:0.5, duration:13, ease:'sine.inOut', repeat:-1, yoyo:true }));
+    // light variation: drift + brightness
+    if(this.lightRef.current){
+      this._loops.push(g.fromTo(this.lightRef.current,{ x:'-18%', y:'-12%', scale:1.1 },{ x:'16%', y:'8%', scale:1.25, duration:38, ease:'sine.inOut', repeat:-1, yoyo:true }));
+      this._loops.push(g.to(this.lightRef.current,{ opacity:0.5, duration:9, ease:'sine.inOut', repeat:-1, yoyo:true }));
+    }
+  }
+
+  run(){
+    const g=window.gsap;
+    this.ambientLoops();
+    const name='Youssouf Kanté';
+    const nameEl=this.nameRef.current, caret=this.caretRef.current;
+    const tl=g.timeline();
+    // 1) black -> reveal porthole
+    tl.set(this.veilRef.current,{ opacity:1 })
+      .to(this.veilRef.current,{ opacity:0, duration:1.6, ease:'power2.inOut' }, 0.3)
+      .fromTo(this.stageRef.current,{ opacity:0, scale:1.08 },{ opacity:1, scale:1, duration:2.2, ease:'power2.out' }, 0.3)
+      // 2) nav + kicker
+      .to(this.navRef.current,{ opacity:1, duration:1.0 }, 1.4)
+      .to(this.kickerRef.current,{ opacity:1, y:0, duration:1.0, ease:'power2.out' }, 1.7);
+    // 3) typewriter name
+    tl.add(()=>{ caret.style.opacity='1'; caret.style.animation='ykCaret 1s steps(1) infinite'; }, 2.2);
+    const per=0.085;
+    for(let i=1;i<=name.length;i++){
+      tl.add(()=>{ nameEl.textContent = name.slice(0,i); }, 2.3 + i*per);
+    }
+    const after=2.3 + name.length*per;
+    // 4) tagline + CTA + hints
+    tl.to(this.tagRef.current,{ opacity:1, duration:1.1, ease:'power2.out' }, after+0.3)
+      .to(this.ctaWrapRef.current,{ opacity:1, duration:1.1, ease:'power2.out' }, after+0.7)
+      .to(this.scrollHintRef.current,{ opacity:1, duration:1.0 }, after+1.1)
+      .add(()=>{ caret.style.animation='none'; g.to(caret,{ opacity:0, duration:0.6 }); this._introDone=true; }, after+1.4);
+  }
+
+  fallback(){
+    [this.veilRef].forEach(r=>{ if(r.current) r.current.style.opacity='0'; });
+    [this.stageRef,this.navRef,this.kickerRef,this.tagRef,this.ctaWrapRef,this.scrollHintRef].forEach(r=>{ if(r.current){ r.current.style.opacity='1'; r.current.style.transform='none'; }});
+    if(this.stageRef.current) this.stageRef.current.style.transform='translate(-50%,-50%)';
+    if(this.nameRef.current) this.nameRef.current.textContent='Youssouf Kanté';
+    this._introDone=true;
+  }
+
+  embark=(e)=>{
+    // "boarding" transition: gentle zoom into the glass + soft white-out, then navigate
+    if(!window.gsap){ return; }
+    e.preventDefault();
+    const g=window.gsap; const href=e.currentTarget.getAttribute('href');
+    g.timeline()
+      .to(this.stageRef.current,{ scale:1.5, duration:1.4, ease:'power2.in' }, 0)
+      .to([this.navRef.current,this.kickerRef.current,this.tagRef.current,this.ctaWrapRef.current,this.scrollHintRef.current],{ opacity:0, duration:0.6 }, 0)
+      .to(this.embarkRef.current,{ opacity:1, duration:1.1, ease:'power2.in' }, 0.5)
+      .add(()=>{ const t=document.querySelector(href); if(t) t.scrollIntoView ? window.location.hash=href : null; });
+  }
+
+  linkOver=(e)=>{ e.currentTarget.style.color='#f6efe2'; }
+  linkOut =(e)=>{ e.currentTarget.style.color='#d8cebd'; }
+  ctaOver =(e)=>{ e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.background='#fff7ea'; }
+  ctaOut  =(e)=>{ e.currentTarget.style.transform='none'; e.currentTarget.style.background='#efe7d8'; }
+  greenOver=(e)=>{ e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.background='#1f4a36'; e.currentTarget.style.boxShadow='0 18px 48px rgba(12,28,19,.5)'; }
+  greenOut =(e)=>{ e.currentTarget.style.transform='none'; e.currentTarget.style.background='#163728'; e.currentTarget.style.boxShadow='0 14px 40px rgba(12,28,19,.4)'; }
+  ghostOver=(e)=>{ e.currentTarget.style.borderColor='rgba(231,220,200,.85)'; e.currentTarget.style.background='rgba(239,231,216,.08)'; }
+  ghostOut =(e)=>{ e.currentTarget.style.borderColor='rgba(231,220,200,.4)'; e.currentTarget.style.background='transparent'; }
+
+  renderVals(){
+    const o={};
+    ['rootRef','stageRef','skyRef','hueRef','farRef','nearRef','farTrackRef','nearTrackRef','lightRef','frameRef','navRef','kickerRef','nameRef','caretRef','tagRef','ctaWrapRef','scrollHintRef','veilRef','embarkRef'].forEach(r=>o[r]=this[r]);
+    o.linkOver=this.linkOver;o.linkOut=this.linkOut;o.ctaOver=this.ctaOver;o.ctaOut=this.ctaOut;
+    o.greenOver=this.greenOver;o.greenOut=this.greenOut;o.ghostOver=this.ghostOver;o.ghostOut=this.ghostOut;o.embark=this.embark;
+    return o;
+  }
+}
+</script>
+</body>
+</html>
